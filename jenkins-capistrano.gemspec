@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.version       = Jenkins::Capistrano::VERSION
 
   gem.add_dependency 'capistrano'
-  gem.add_dependency 'httparty',  '~> 0.6.1'
+  gem.add_dependency 'httparty',  '~> 0.8.3'
   gem.add_dependency 'hpricot'
 
   gem.add_development_dependency 'rake'
