@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["cynipe@gmail.com"]
   gem.description   = %q{The capistrano tasks for Jenkins CI Server}
   gem.summary       = %q{}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/cynipe/jenkins-capistrano"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
