@@ -1,26 +1,30 @@
-# jenkins-capistrano
+==================
+jenkins-capistrano
+==================
 
 The capistrano tasks for Jenkins CI Server
 
-## Installation
+Installation
+============
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile::
 
-    gem 'jenkins-capistrano'
+  gem 'jenkins-capistrano'
 
-And then execute:
+And then execute::
 
-    $ bundle
+  $ bundle
 
-Or install it yourself as:
+Or install it yourself as::
 
-    $ gem install jenkins-capistrano
+  $ gem install jenkins-capistrano
 
-## Example
+Example
+=======
 
 The following code will creates or updates Jenkins jobs before each deploy task:
 
-config directory structure(name your config.xml as a job name):
+config directory structure(name your config.xml as a job name)::
 
   config
   ├── deploy.rb
@@ -31,7 +35,7 @@ config directory structure(name your config.xml as a job name):
            └── job-name3.xml
 
 
-deploy.rb:
+deploy.rb::
 
   set :application, "your-awesome-app"
   set :scm, :git
