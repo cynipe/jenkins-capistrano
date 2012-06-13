@@ -22,6 +22,9 @@ Or install it yourself as::
 Example
 =======
 
+Job Configuration
+~~~~~~~~~~~~~~~~~
+
 The following code will creates or updates Jenkins jobs before each deploy task:
 
 config directory structure(name your config.xml as a job name)::
@@ -47,6 +50,32 @@ deploy.rb::
   # set :jenkins_job_config_dir, 'config/jenkins/jobs'
 
   before 'deploy', 'jenkins:deploy_jobs'
+
+Node Configuration
+~~~~~~~~~~~~~~~~~~
+
+config directory structure::
+
+  config
+  ├── deploy.rb
+  └── jenkins
+       └── nodes
+           ├── node1.json
+           ├── node2.json
+           └── node3.json
+
+deploy.rb::
+
+  set :application, "your-awesome-app"
+  set :scm, :git
+  set :repository,  "https://github.com/your/repository.git"
+
+  set :jenkins_host, 'http://localhost:8080'
+  # set :jenkins_username, '' # default empty
+  # set :jenkins_password, '' # default empty
+  # set :jenkins_node_config_dir, 'config/jenkins/nodes'
+
+  before 'deploy', 'jenkins:config_nodes'
 
 ## Contributing
 
