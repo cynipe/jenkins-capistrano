@@ -93,6 +93,10 @@ module Jenkins
     def post_form(path, fields)
       url = URI.parse("#{self.class.base_uri}/#{path}")
       req = Net::HTTP::Post.new(url.path)
+
+      basic_auth = self.class.default_options[:basic_auth]
+      req.basic_auth basic_auth[:username], basic_auth[:password] if basic_auth
+
       req.set_form_data(fields)
       http = Net::HTTP.new(url.host, url.port)
       http.request(req)
