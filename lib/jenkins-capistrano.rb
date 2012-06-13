@@ -25,10 +25,12 @@ Capistrano::Configuration.instance(:must_exist).load do
   end
 
   def job_configs
+    abort "Please create the jenkins_job_config_dir first: #{jenkins_job_config_dir}" unless Dir.exists? jenkins_job_config_dir
     Dir.glob("#{jenkins_job_config_dir}/*.xml")
   end
 
   def node_configs
+    abort "Please create the jenkins_node_config_dir first: #{jenkins_node_config_dir}" unless Dir.exists? jenkins_node_config_dir
     Dir.glob("#{jenkins_node_config_dir}/*.json")
   end
 
