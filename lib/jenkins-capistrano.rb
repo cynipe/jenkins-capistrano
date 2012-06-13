@@ -46,7 +46,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     task :deploy_jobs do
       strategy = fetch(:jenkins_job_deploy_strategy, :clean)
       logger.info "deploying jenkins jobs to #{jenkins_host}"
-      logger.warn "no job configs found." if job_configs.empty?
+      logger.important "no job configs found." if job_configs.empty?
       job_configs.each do |file|
         name = File.basename(file, '.xml')
         client.create_or_update_job(name, File.read(file))
@@ -64,7 +64,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     task :config_nodes do
       strategy = fetch(:jenkins_node_deploy_strategy, :clean)
       logger.info "configuring jenkins nodes to #{jenkins_host}"
-      logger.warn "no node configs found." if node_configs.empty?
+      logger.important "no node configs found." if node_configs.empty?
       node_configs.each do |file|
         name = File.basename(file, '.json')
         opts = JSON.parse(File.read(file)).to_hash.
