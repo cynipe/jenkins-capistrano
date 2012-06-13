@@ -41,12 +41,12 @@ module Jenkins
     def add_node(name, opts = {})
       options = default_node_options.merge(opts)
       options[:name] = name
-      opstions[:labels] = options[:labels].split(/\s*,\s*/).join(' ') if options[:labels]
+      options[:labels] = options[:labels].split(/\s*,\s*/).join(' ') if options[:labels]
 
       response = post_form("/computer/doCreateItem", node_form_fields(options))
       case response
       when Net::HTTPFound
-        { :name => opstions[:name], :slave_host => opstions[:slave_host] }
+        { :name => options[:name], :slave_host => options[:slave_host] }
       else
         raise ServerError, parse_error_message(response)
       end
@@ -55,7 +55,7 @@ module Jenkins
     def update_node(name, opts = {})
       options = default_node_options.merge(opts)
       options[:name] = name
-      opstions[:labels] = options[:labels].split(/\s*,\s*/).join(' ') if options[:labels]
+      options[:labels] = options[:labels].split(/\s*,\s*/).join(' ') if options[:labels]
 
       response = post_form("/computer/#{CGI::escape(name)}/configSubmit", node_form_fields(options))
       case response
