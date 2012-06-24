@@ -78,6 +78,8 @@ sample node configuration::
     "master_key"  : "/var/lib/jenkins/.ssh/id_rsa",
     "slave_fs"    : "/home/jenkins",
     "exclusive"   : true,
+    "java_path": "/opt/java/bin/java",
+    "jvm_options": "-Xmx512M",
     "env_vars": {
       "key1": "val1",
       "key2": "val2"
