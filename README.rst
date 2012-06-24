@@ -54,7 +54,7 @@ deploy.rb::
 Node Configuration
 ~~~~~~~~~~~~~~~~~~
 
-config directory structure::
+config directory structure(name your json file as a node name)::
 
   config
   ├── deploy.rb
@@ -63,6 +63,26 @@ config directory structure::
            ├── node1.json
            ├── node2.json
            └── node3.json
+
+sample node configuration::
+
+  {
+    "name"        : "example",
+    "type"        : "hudson.slaves.DumbSlave$DescriptorImpl",
+    "description" : "some description",
+    "executors"   : 2,
+    "labels"      : "linux, java, ruby",
+    "slave_host"  : "example.com",
+    "slave_port"  : 22,
+    "slave_user"  : "jenkins",
+    "master_key"  : "/var/lib/jenkins/.ssh/id_rsa",
+    "slave_fs"    : "/home/jenkins",
+    "exclusive"   : true,
+    "env_vars": {
+      "key1": "val1",
+      "key2": "val2"
+    }
+  }
 
 deploy.rb::
 
