@@ -42,11 +42,12 @@ module Jenkins
       options = default_node_options.merge(opts)
       options[:name] = name
       options[:labels] = options[:labels].split(/\s*,\s*/).join(' ') if options[:labels]
+      options[:env_vars] = options[:env_vars].map { |k, v| { :key => k, :value => v } }
 
       response = post_form("/computer/doCreateItem", node_form_fields(options))
       case response
       when Net::HTTPFound
-        { :name => options[:name], :slave_host => options[:slave_host] }
+        { :name => name, :slave_host => options[:slave_host] }
       else
         raise ServerError, parse_error_message(response)
       end
@@ -56,11 +57,12 @@ module Jenkins
       options = default_node_options.merge(opts)
       options[:name] = name
       options[:labels] = options[:labels].split(/\s*,\s*/).join(' ') if options[:labels]
+      options[:env_vars] = options[:env_vars].map { |k, v| { :key => k, :value => v } }
 
       response = post_form("/computer/#{CGI::escape(name)}/configSubmit", node_form_fields(options))
       case response
       when Net::HTTPFound
-        { :name => options[:name], :slave_host => options[:slave_host] }
+        { :name => name, :slave_host => options[:slave_host] }
       else
         raise ServerError, parse_error_message(response)
       end
@@ -127,18 +129,22 @@ module Jenkins
           "labelString"       => options[:labels],
           "mode"              => options[:exclusive] ? "EXCLUSIVE" : "NORMAL",
           "retentionStrategy" => { "stapler-class"  => "hudson.slaves.RetentionStrategy$Always" },
-          "nodeProperties"    => { "stapler-class-bag" => "true" },
           "launcher"          => {
             "stapler-class" => "hudson.plugins.sshslaves.SSHLauncher",
             "host"          => options[:slave_host],
             "port"          => options[:slave_port],
             "username"      => options[:slave_user],
             "privatekey"    => options[:master_key],
+          },
+          "nodeProperties"    => {
+            "stapler-class-bag" => "true",
+            "hudson-slaves-EnvironmentVariablesNodeProperty" => {
+              "env" => options[:env_vars]
+            }
           }
         }.to_json
       }
     end
-
 
   end
 end
