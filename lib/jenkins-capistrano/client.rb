@@ -135,6 +135,8 @@ module Jenkins
             "port"          => options[:slave_port],
             "username"      => options[:slave_user],
             "privatekey"    => options[:master_key],
+            "javaPath"      => options[:java_path],
+            "jvmOptions"    => options[:jvm_options]
           },
           "nodeProperties"    => {
             "stapler-class-bag" => "true",
