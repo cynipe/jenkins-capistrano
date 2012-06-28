@@ -3,6 +3,10 @@ module Jenkins
   class Client
     module Job
 
+      def job_names
+        self.class.get("/api/json")['jobs'].map {|job| job['name'] }
+      end
+
       def create_job(name, config)
         res = self.class.post("/createItem/api/xml?name=#{CGI.escape(name)}", xml_body(config))
         raise ServerError, parse_error_message(res) unless res.code.to_i == 200
@@ -18,11 +22,7 @@ module Jenkins
       end
 
       def create_or_update_job(name, config)
-        begin
-          create_job(name, config)
-        rescue ServerError => e
-          update_job(name, config)
-        end
+        job_names.include?(name) ? update_job(name, config) : create_job(name, config)
       end
 
       private
