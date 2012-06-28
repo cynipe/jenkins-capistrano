@@ -3,6 +3,10 @@ module Jenkins
   class Client
     module Node
 
+      def node_names
+        self.class.get("/computer/api/json")['computer'].map {|computer| computer['displayName'] }
+      end
+
       def add_node(name, opts = {})
         options = default_node_options.merge(opts)
         options[:name] = name
@@ -34,11 +38,7 @@ module Jenkins
       end
 
       def config_node(name, opts = {})
-        begin
-          add_node(name, opts)
-        rescue ServerError => e
-          update_node(name, opts)
-        end
+        node_names.include?(name) ? update_node(name, config) : add_node(name, config)
       end
 
       private
