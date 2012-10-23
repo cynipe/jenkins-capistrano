@@ -22,7 +22,7 @@ module Jenkins
       require "hpricot"
       doc = Hpricot(response.body)
       error_msg = doc.search("td#main-panel p")
-      error_msg.inner_text.empty? ? "Server error: code=#{response.code}, #{response.body}" : error_msg
+      error_msg.inner_text.empty? ? doc.search("body").text : error_msg
     end
 
     include Node
