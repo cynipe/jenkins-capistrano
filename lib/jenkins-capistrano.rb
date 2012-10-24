@@ -20,6 +20,8 @@ Capistrano::Configuration.instance(:must_exist).load do
   _cset(:jenkins_job_config_dir) { 'config/jenkins/jobs' }
   _cset(:jenkins_node_config_dir) { 'config/jenkins/nodes' }
 
+  _cset(:disabled_jobs) { [] }
+
   def client
     @client ||= Jenkins::Client.new(jenkins_host, { :username => jenkins_username,  :password => jenkins_password})
   end
@@ -51,10 +53,18 @@ Capistrano::Configuration.instance(:must_exist).load do
       logger.important "no job configs found." if job_configs.empty?
       job_configs.each do |file|
         name = File.basename(file, '.xml')
-        client.create_or_update_job(name, File.read(file))
-        logger.trace "job #{name} created."
-      end
+        msg = StringIO.new
 
+        client.create_or_update_job(name, File.read(file))
+        msg << "job #{name} created"
+
+        if disabled_jobs.include? name
+          client.disable_job(name)
+          msg << ", but was set to disabled"
+        end
+        msg << "."
+        logger.trace msg.string
+      end
     end
 
     desc <<-DESC
