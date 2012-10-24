@@ -56,7 +56,6 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     DESC
     task :deploy_jobs do
-      strategy = fetch(:jenkins_job_deploy_strategy, :clean)
       logger.info "deploying jenkins jobs to #{jenkins_host}"
       logger.important "no job configs found." if job_configs.empty?
       job_configs.each do |file|
@@ -85,7 +84,6 @@ Capistrano::Configuration.instance(:must_exist).load do
           default: 'config/jenkins/nodes'
     DESC
     task :config_nodes do
-      strategy = fetch(:jenkins_node_deploy_strategy, :clean)
       logger.info "configuring jenkins nodes to #{jenkins_host}"
       logger.important "no node configs found." if node_configs.empty?
       node_configs.each do |file|
