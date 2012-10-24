@@ -9,7 +9,7 @@ end
 
 # Capistrano task for Jenkins.
 #
-# Just add "require 'jenkins-capistrano'" in your Capistrano deploy.rb, and
+# Just add "require 'jenkins-capistrano'" in your Capistrano deploy.rb
 Capistrano::Configuration.instance(:must_exist).load do
 
   _cset(:jenkins_host) { abort "Please specify the host of your jenkins server, set :jenkins_host, 'http://localhost:8080'" }
@@ -19,6 +19,8 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   _cset(:jenkins_job_config_dir) { 'config/jenkins/jobs' }
   _cset(:jenkins_node_config_dir) { 'config/jenkins/nodes' }
+
+  _cset(:disabled_jobs) { [] }
 
   def client
     @client ||= Jenkins::Client.new(jenkins_host, { :username => jenkins_username,  :password => jenkins_password})
@@ -40,31 +42,48 @@ Capistrano::Configuration.instance(:must_exist).load do
   namespace :jenkins do
 
     desc <<-DESC
-    Deploy the jobs to Jenkins server -- meaning create or update --
+      Deploy the jobs to Jenkins server -- meaning create or update --
 
-      set :jenkins_job_config_dir,      'config/jenkins/jobs'
-      set :jenkins_job_deploy_strategy, :clean | :merge
+      Configuration
+      -------------
+      jenkins_job_config_dir
+          the directory path where the config.xml stored.
+          default: 'config/jenkins/jobs'
+
+      disabled_jobs
+          job names array which should be disabled after deployment.
+          default: []
+
     DESC
     task :deploy_jobs do
-      strategy = fetch(:jenkins_job_deploy_strategy, :clean)
       logger.info "deploying jenkins jobs to #{jenkins_host}"
       logger.important "no job configs found." if job_configs.empty?
       job_configs.each do |file|
         name = File.basename(file, '.xml')
-        client.create_or_update_job(name, File.read(file))
-        logger.trace "job #{name} created."
-      end
+        msg = StringIO.new
 
+        client.create_or_update_job(name, File.read(file))
+        msg << "job #{name} created"
+
+        if disabled_jobs.include? name
+          client.disable_job(name)
+          msg << ", but was set to disabled"
+        end
+        msg << "."
+        logger.trace msg.string
+      end
     end
 
     desc <<-DESC
-    Configure the nodes to Jenkins server -- meaning create or update --
+      Configure the nodes to Jenkins server -- meaning create or update --
 
-      set :jenkins_node_config_dir,      'config/jenkins/nodes'
-      set :jenkins_node_deploy_strategy, :clean | :merge
+      Configuration
+      -------------
+      jenkins_node_config_dir
+          the directory path where the node's configuration stored.
+          default: 'config/jenkins/nodes'
     DESC
     task :config_nodes do
-      strategy = fetch(:jenkins_node_deploy_strategy, :clean)
       logger.info "configuring jenkins nodes to #{jenkins_host}"
       logger.important "no node configs found." if node_configs.empty?
       node_configs.each do |file|

@@ -51,6 +51,17 @@ deploy.rb::
 
   before 'deploy', 'jenkins:deploy_jobs'
 
+Want to disabling some jobs for specific environment?
+-----------------------------------------------------
+
+Since 0.0.5, you can disabling jobs using `disabled_jobs` option.
+Use this option with `multistage-extension <https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension>`_.
+
+Put the following line into `config/deploy/<env>.rb`::
+
+  set :disabled_jobs, %w(job1 job2)
+
+
 Node Configuration
 ~~~~~~~~~~~~~~~~~~
 
