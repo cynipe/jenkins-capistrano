@@ -38,7 +38,7 @@ module Jenkins
       end
 
       def config_node(name, opts = {})
-        node_names.include?(name) ? update_node(name, config) : add_node(name, config)
+        node_names.include?(name) ? update_node(name, opts) : add_node(name, opts)
       end
 
       private
