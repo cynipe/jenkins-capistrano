@@ -110,6 +110,13 @@ deploy.rb::
 
   before 'deploy', 'jenkins:config_nodes'
 
+
+Release Notes
+=============
+
+0.0.5.2
+  * Fix cgi library loading error
+
 Contributing
 ============
 
