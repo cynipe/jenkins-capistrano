@@ -1,5 +1,5 @@
 require 'httparty'
-require 'cgi/util'
+require 'cgi'
 require 'json'
 require 'jenkins-capistrano/client/node'
 require 'jenkins-capistrano/client/job'
