@@ -4,6 +4,7 @@ require 'json'
 require 'jenkins-capistrano/client/node'
 require 'jenkins-capistrano/client/job'
 require 'jenkins-capistrano/client/view'
+require 'jenkins-capistrano/client/plugin'
 
 module Jenkins
   class Client
@@ -11,6 +12,7 @@ module Jenkins
 
     headers 'content-type' => 'application/json'
     format :json
+    follow_redirects false
 
     ServerError = Class.new(Exception)
 
@@ -29,6 +31,7 @@ module Jenkins
     include Node
     include Job
     include View
+    include Plugin
 
   end
 end

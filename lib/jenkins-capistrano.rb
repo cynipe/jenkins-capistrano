@@ -21,6 +21,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   _cset(:jenkins_node_config_dir) { 'config/jenkins/nodes' }
   _cset(:jenkins_view_config_dir) { 'config/jenkins/views' }
 
+  _cset(:jenkins_plugins) { [] }
+  _cset(:jenkins_plugin_enable_update) { false }
+
   _cset(:disabled_jobs) { [] }
 
   def client
@@ -121,6 +124,31 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
     end
 
+    desc <<-DESC
+      Install plugins to Jenkins server
+
+      Configuration
+      -------------
+      jenkins_plugins
+          the hash array contains plugin's name and version.
+
+      jenkins_plugin_enable_update
+        whether to update or ignore when the plugin already installed.
+        default: false
+    DESC
+    task :install_plugins do
+      logger.info "installing plugins to #{jenkins_host}"
+      if jenkins_plugins.empty?
+        logger.important "no plugin config found."
+        next
+      end
+
+      candidates = client.prevalidate_plugin_config(jenkins_plugins)
+      plugins_to_install = candidates.reduce([]) do |mem, candidate|
+        mem << candidate if candidate['mode'] == 'missing' or jenkins_plugin_enable_update
+      end
+      client.install_plugin(plugins_to_install)
+    end
   end
 
 end
