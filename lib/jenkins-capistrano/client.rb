@@ -3,6 +3,7 @@ require 'cgi'
 require 'json'
 require 'jenkins-capistrano/client/node'
 require 'jenkins-capistrano/client/job'
+require 'jenkins-capistrano/client/view'
 
 module Jenkins
   class Client
@@ -27,6 +28,7 @@ module Jenkins
 
     include Node
     include Job
+    include View
 
   end
 end
