@@ -19,6 +19,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   _cset(:jenkins_job_config_dir) { 'config/jenkins/jobs' }
   _cset(:jenkins_node_config_dir) { 'config/jenkins/nodes' }
+  _cset(:jenkins_view_config_dir) { 'config/jenkins/views' }
 
   _cset(:disabled_jobs) { [] }
 
@@ -34,6 +35,11 @@ Capistrano::Configuration.instance(:must_exist).load do
   def node_configs
     abort "Please create the jenkins_node_config_dir first: #{jenkins_node_config_dir}" unless Dir.exists? jenkins_node_config_dir
     Dir.glob("#{jenkins_node_config_dir}/*.json")
+  end
+
+  def view_configs
+    abort "Please create the jenkins_view_config_dir first: #{jenkins_node_config_dir}" unless Dir.exists? jenkins_node_config_dir
+    Dir.glob("#{jenkins_view_config_dir}/*.xml")
   end
 
   # minimum configurations
@@ -93,7 +99,26 @@ Capistrano::Configuration.instance(:must_exist).load do
         client.config_node(name, opts)
         logger.trace "node #{name} created."
       end
+    end
 
+    desc <<-DESC
+      Configure the views to Jenkins server -- meaning create or update --
+
+      Configuration
+      -------------
+      jenkins_view_config_dir
+          the directory path where the view's configuration stored.
+          default: 'config/jenkins/views'
+    DESC
+    task :config_views do
+      logger.info "configuring jenkins views to #{jenkins_host}"
+      logger.important "no view configs found." if view_configs.empty?
+      view_configs.each do |file|
+        name = File.basename(file, '.xml')
+        msg = StringIO.new
+        client.create_or_update_view(name, File.read(file))
+        logger.trace "view #{name} created."
+      end
     end
 
   end
