@@ -1,3 +1,4 @@
+require 'pry'
 require 'jenkins-capistrano/version'
 require 'jenkins-capistrano/client'
 
@@ -22,7 +23,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   _cset(:jenkins_view_config_dir) { 'config/jenkins/views' }
 
   _cset(:jenkins_plugins) { [] }
+  _cset(:jenkins_install_timeout) { 60 * 5 }
   _cset(:jenkins_plugin_enable_update) { false }
+  _cset(:jenkins_plugin_enable_restart) { false }
 
   _cset(:disabled_jobs) { [] }
 
@@ -43,6 +46,15 @@ Capistrano::Configuration.instance(:must_exist).load do
   def view_configs
     abort "Please create the jenkins_view_config_dir first: #{jenkins_node_config_dir}" unless Dir.exists? jenkins_node_config_dir
     Dir.glob("#{jenkins_view_config_dir}/*.xml")
+  end
+
+  def missing_plugins
+    installed = client.plugin_names
+    jenkins_plugins.select do |plugin|
+      missing = !installed.include?(plugin.split('@'))
+      logger.info "#{plugin} is already installed." unless missing
+      missing
+    end
   end
 
   # minimum configurations
@@ -132,8 +144,16 @@ Capistrano::Configuration.instance(:must_exist).load do
       jenkins_plugins
           the hash array contains plugin's name and version.
 
+      jenkins_install_timeout
+        a timeout seconds to wait for plugin installation.
+        default: 5 min
+
       jenkins_plugin_enable_update
         whether to update or ignore when the plugin already installed.
+        default: false
+
+      jenkins_plugin_enable_restart
+        whether to restart or ignore when the plugin installation requires restarting.
         default: false
     DESC
     task :install_plugins do
@@ -143,11 +163,47 @@ Capistrano::Configuration.instance(:must_exist).load do
         next
       end
 
-      candidates = client.prevalidate_plugin_config(jenkins_plugins)
+      logger.info "calcurating plugins to install..."
+      candidates = client.prevalidate_plugin_config(missing_plugins)
       plugins_to_install = candidates.reduce([]) do |mem, candidate|
-        mem << candidate if candidate['mode'] == 'missing' or jenkins_plugin_enable_update
+        plugin = "#{candidate['name']}@#{candidate['version']}"
+        mode = candidate['mode']
+        case
+        when mode == 'missing'
+          logger.debug "#{plugin} marked to be installed."
+          mem << candidate
+        when mode == 'old'
+          if jenkins_plugin_enable_update
+            logger.debug "#{plugin} marked to be updated."
+            mem << candidate
+          end
+        end
+        mem
       end
+
+      logger.info "installing the plugins, this could be take a while..."
       client.install_plugin(plugins_to_install)
+
+      names = plugins_to_install.map {|v| v['name'] }
+      client.wait_for_complete(jenkins_install_timeout) do |job|
+        result = job['status'] == true
+        # skip unknown jobs
+        if result and names.include?(job['name'])
+          names.delete job['name']
+          logger.debug "#{job['name']}@#{job['version']} installed."
+        end
+        result
+      end
+      logger.info "all plugins successfully installed."
+
+      if client.restart_required?
+        if jenkins_plugin_enable_restart
+          client.safe_restart!
+          logger.important "restarting jenkins."
+        else
+          logger.important "restarting is disabled, please restart the jenkins manually for complete the installation."
+        end
+      end
     end
   end
 

@@ -1,7 +1,7 @@
 
 module Jenkins
   class Client
-    module Plugin
+    module PluginManager
 
       def plugin_names
         self.class.get("/pluginManager/api/json?tree=plugins[shortName]")['plugins'].map {|plugin| plugin['name'] }
@@ -15,7 +15,7 @@ module Jenkins
         JSON.parse(res.body)
       end
 
-      def install_plugin(plugins)
+      def install_plugin(plugins, timeout = 60)
         config = generate_config(plugins)
         res = self.class.post("/pluginManager/installNecessaryPlugins", xml_body(config))
         raise ServerError, parse_error_message(res) unless res.code.to_i == 302

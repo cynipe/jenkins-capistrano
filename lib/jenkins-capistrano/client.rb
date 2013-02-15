@@ -4,7 +4,8 @@ require 'json'
 require 'jenkins-capistrano/client/node'
 require 'jenkins-capistrano/client/job'
 require 'jenkins-capistrano/client/view'
-require 'jenkins-capistrano/client/plugin'
+require 'jenkins-capistrano/client/update_center'
+require 'jenkins-capistrano/client/plugin_manager'
 
 module Jenkins
   class Client
@@ -15,6 +16,7 @@ module Jenkins
     follow_redirects false
 
     ServerError = Class.new(Exception)
+    TimeoutError = Class.new(Exception)
 
     def initialize(host, opts = {})
       self.class.base_uri host
@@ -28,10 +30,16 @@ module Jenkins
       error_msg.inner_text.empty? ? doc.search("body").text : error_msg
     end
 
+    def safe_restart!
+      self.class.post("/safeRestart")
+      raise ServerError, parse_error_message(res) unless res.code.to_i == 200
+    end
+
     include Node
     include Job
     include View
-    include Plugin
+    include UpdateCenter
+    include PluginManager
 
   end
 end
