@@ -30,9 +30,29 @@ module Jenkins
       error_msg.inner_text.empty? ? doc.search("body").text : error_msg
     end
 
-    def safe_restart!
-      self.class.post("/safeRestart")
-      raise ServerError, parse_error_message(res) unless res.code.to_i == 200
+    def session
+      self.class.get('/api/json?tree=nothing').headers['X-JENKINS-SESSION']
+    rescue Errno::ECONNRESET, Errno::ECONNREFUSED => e
+      nil
+    end
+
+    def safe_restart!(timeout = 60 * 5)
+      if block_given?
+        due = Time.now + timeout
+        origin = session
+      end
+
+      res = self.class.post("/safeRestart")
+      raise ServerError, parse_error_message(res) unless res.code.to_i == 302
+      return unless block_given?
+
+      loop do
+        new = session
+        break if new and new != origin
+        yield
+        raise TimeoutError, "Restating timeout: #{timeout}" if Time.now > due
+        sleep 5
+      end
     end
 
     include Node

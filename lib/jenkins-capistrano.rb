@@ -198,8 +198,11 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       if client.restart_required?
         if jenkins_plugin_enable_restart
-          client.safe_restart!
           logger.important "restarting jenkins."
+          client.safe_restart! do
+            logger.debug "waiting for Jenkins to restart..."
+          end
+          logger.info "Jenkins is successfully restarted."
         else
           logger.important "restarting is disabled, please restart the jenkins manually for complete the installation."
         end
