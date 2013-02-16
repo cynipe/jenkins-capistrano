@@ -110,6 +110,86 @@ deploy.rb::
 
   before 'deploy', 'jenkins:config_nodes'
 
+View Configuration
+~~~~~~~~~~~~~~~~~~
+
+config directory structure(name your json file as a node name)::
+
+  config
+  ├── deploy.rb
+  └── jenkins
+       └── views
+           ├── view1.xml
+           ├── view2.xml
+           └── view3.xml
+
+sample view configuration::
+
+    <listView>
+      <name>view1</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames class="tree-set">
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.view.dashboard.Dashboard/jobNames/comparator"/>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <includeRegex>job.*</includeRegex>
+    </listView>
+
+deploy.rb::
+
+  set :application, "your-awesome-app"
+  set :scm, :git
+  set :repository,  "https://github.com/your/repository.git"
+
+  set :jenkins_host, 'http://localhost:8080'
+  # set :jenkins_username, '' # default empty
+  # set :jenkins_password, '' # default empty
+  # set :jenkins_node_config_dir, 'config/jenkins/nodes'
+
+  before 'deploy', 'jenkins:config_views'
+
+
+Don't know how to write config.xml for view?
+--------------------------------------------
+
+Create or configure the view you want to manage via usual operation through the Jenkins UI.
+Then, open the `JENKINS_HOME/config.xml` and copy the desired configuration from `<views>` section, and
+ommit `<owner class="hudson" reference="../../.."/>` line.
+
+Plugin Configuration(experimental)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note
+----
+
+This feature is may change its API without any notice.
+Use at your own risk.
+
+deploy.rb::
+
+  set :application, "your-awesome-app"
+  set :scm, :git
+  set :repository,  "https://github.com/your/repository.git"
+
+  set :jenkins_plugins, %w(cron_column envinject join)
+  # you can specify version as follows:
+  # set :jenkins_plugins, %w(cron_column@1.1.2 envinject join@1.0.0)
+  set :jenkins_install_timeout, 60 * 5      # default: 5min
+  set :jenkins_plugin_enable_update, false  # dafault: false
+  set :jenkins_plugin_enable_restart, false # default: false
+
+  before 'deploy', 'jenkins:install_plugins'
 
 Release Notes
 =============
