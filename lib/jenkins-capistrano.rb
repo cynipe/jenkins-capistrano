@@ -1,4 +1,3 @@
-require 'pry'
 require 'jenkins-capistrano/version'
 require 'jenkins-capistrano/client'
 
