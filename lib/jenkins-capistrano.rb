@@ -157,9 +157,9 @@ Capistrano::Configuration.instance(:must_exist).load do
         default: false
     DESC
     task :install_plugins do
-      logger.info "installing plugins to #{jenkins_host}"
+      logger.important "installing plugins to #{jenkins_host}"
       if jenkins_plugins.empty?
-        logger.important "no plugin config found."
+        logger.info "no plugin config found."
         next
       end
 
@@ -179,6 +179,10 @@ Capistrano::Configuration.instance(:must_exist).load do
           end
         end
         mem
+      end
+      if plugins_to_install.empty?
+        logger.info "all plugins already installed."
+        next
       end
 
       logger.info "installing the plugins, this could be take a while..."
