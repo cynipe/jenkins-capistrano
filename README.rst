@@ -2,7 +2,12 @@
 jenkins-capistrano
 ==================
 
-The capistrano tasks for Jenkins CI Server
+The capistrano tasks for Jenkins CI Server. Supports to manage following things:
+
+* Job
+* Node
+* View
+* Plugins(Experimental)
 
 Installation
 ============
@@ -193,6 +198,10 @@ deploy.rb::
 
 Release Notes
 =============
+
+0.0.6
+  * Support view management (`726ad3ef <https://github.com/cynipe/jenkins-capistrano/commit/726ad3ef817ba15a2d66503ce0dd4bc961ed92e2>`_)
+  * Support plugin management(Experimental) (`4d9964c0 <https://github.com/cynipe/jenkins-capistrano/commit/4d9964c00ff95798915484ceb8b5c837b2aa03e8>`_)
 
 0.0.5.2
   * Fix cgi library loading error
