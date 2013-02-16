@@ -173,8 +173,8 @@ Plugin Configuration(experimental)
 Note
 ----
 
-This feature is may change the API without any notice.
-Use your own lisk.
+This feature is may change its API without any notice.
+Use at your own risk.
 
 deploy.rb::
 
@@ -185,7 +185,9 @@ deploy.rb::
   set :jenkins_plugins, %w(cron_column envinject join)
   # you can specify version as follows:
   # set :jenkins_plugins, %w(cron_column@1.1.2 envinject join@1.0.0)
-  set :jenkins_plugin_enable_update, false # dafault: false
+  set :jenkins_install_timeout, 60 * 5      # default: 5min
+  set :jenkins_plugin_enable_update, false  # dafault: false
+  set :jenkins_plugin_enable_restart, false # default: false
 
   before 'deploy', 'jenkins:install_plugins'
 
