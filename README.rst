@@ -167,6 +167,30 @@ Create or configure the view you want to manage via usual operation through the 
 Then, open the `JENKINS_HOME/config.xml` and copy the desired configuration from `<views>` section, and
 ommit `<owner class="hudson" reference="../../.."/>` line.
 
+Plugin Configuration(experimental)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note
+----
+
+This feature is may change its API without any notice.
+Use at your own risk.
+
+deploy.rb::
+
+  set :application, "your-awesome-app"
+  set :scm, :git
+  set :repository,  "https://github.com/your/repository.git"
+
+  set :jenkins_plugins, %w(cron_column envinject join)
+  # you can specify version as follows:
+  # set :jenkins_plugins, %w(cron_column@1.1.2 envinject join@1.0.0)
+  set :jenkins_install_timeout, 60 * 5      # default: 5min
+  set :jenkins_plugin_enable_update, false  # dafault: false
+  set :jenkins_plugin_enable_restart, false # default: false
+
+  before 'deploy', 'jenkins:install_plugins'
+
 Release Notes
 =============
 
