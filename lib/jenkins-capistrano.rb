@@ -211,6 +211,52 @@ Capistrano::Configuration.instance(:must_exist).load do
         end
       end
     end
+
+    namespace :reverse do
+
+      desc <<-DESC
+        Reverse all configs from Jenkins.
+      DESC
+      task :default do
+        job
+        node
+        view
+      end
+
+      %w(job node view).each do |kind|
+
+        instance_eval <<-RUBY, __FILE__, __LINE__ + 1
+          desc <<-DESC
+            Reverse #{kind} configs from Jenkins into `jenkins_#{kind}_config_dir`
+          DESC
+          task :#{kind} do |task_name|
+            logger.important "reverse #{kind} config from \#{jenkins_host}"
+            unless File.exists? jenkins_#{kind}_config_dir and File.directory? jenkins_#{kind}_config_dir
+              logger.info "\#{task_name} needs a \#{jenkins_#{kind}_config_dir} directory."
+              logger.info "I'll make one for you."
+              FileUtils.mkdir_p jenkins_#{kind}_config_dir
+            end
+
+            #{kind}_names = client.#{kind}_names
+            unless #{kind}_names.size > 0
+              logger.info "No #{kind}s found at \#{jenkins_host}."
+              next
+            end
+
+            #{kind}_names.each do |name|
+              #{kind}_config = "\#{jenkins_#{kind}_config_dir}/\#{name}.xml"
+              File.open(#{kind}_config, 'w') do |f|
+                f.puts client.#{kind}_config(name)
+                logger.debug "\#{name}'s config.xml reversed in \#{#{kind}_config}."
+              end
+            end
+            logger.info "All #{kind} configs reversed successfully."
+          end
+        RUBY
+      end
+
+    end
+
   end
 
 end
