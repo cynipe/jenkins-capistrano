@@ -4,7 +4,14 @@ module Jenkins
     module Node
 
       def node_names
-        self.class.get("/computer/api/json")['computer'].map {|computer| computer['displayName'] }
+        self.class.get("/computer/api/json")['computer'].map {|computer| computer['displayName'] }.
+          select {|name| name != 'master' }
+      end
+
+      def node_config(name)
+        res = self.class.get("/computer/#{CGI.escape(name)}/config.xml")
+        raise ServerError, parse_error_message(res) unless res.code.to_i == 200
+        res.body
       end
 
       def add_node(name, opts = {})
