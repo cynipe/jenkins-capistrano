@@ -7,6 +7,12 @@ module Jenkins
         self.class.get("/api/json")['jobs'].map {|job| job['name'] }
       end
 
+      def job_config(name)
+        res = self.class.get("/job/#{CGI.escape(name)}/config.xml")
+        raise ServerError, parse_error_message(res) unless res.code.to_i == 200
+        res.body
+      end
+
       def create_job(name, config)
         res = self.class.post("/createItem/api/xml?name=#{CGI.escape(name)}", xml_body(config))
         raise ServerError, parse_error_message(res) unless res.code.to_i == 200
