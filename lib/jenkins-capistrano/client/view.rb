@@ -1,10 +1,19 @@
+# -*- encoding: utf-8 -*-
 
 module Jenkins
   class Client
     module View
 
       def view_names
-        self.class.get("/api/json")['views'].map {|view| view['name'] }
+        self.class.get("/api/json")['views'].map {|view| view['name'] }.
+          # FIXME need to support i18N. Is there any way to retrieve what 'all' view name is?
+          select {|name| name != 'すべて' }
+      end
+
+      def view_config(name)
+        res = self.class.get("/view/#{CGI.escape(name)}/config.xml")
+        raise ServerError, parse_error_message(res) unless res.code.to_i == 200
+        res.body
       end
 
       def create_view(name, config)
