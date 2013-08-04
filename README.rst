@@ -27,6 +27,8 @@ Or install it yourself as::
 Example
 =======
 
+See `example directory <https://github.com/cynipe/jenkins-capistrano/tree/develop/example>`_ or following instructions.
+
 Job Configuration
 ~~~~~~~~~~~~~~~~~
 

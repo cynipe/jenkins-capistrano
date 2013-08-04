@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+script/bootstrap || exit 1
+bundle exec cap "$@" deploy
