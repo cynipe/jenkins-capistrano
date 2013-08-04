@@ -211,3 +211,5 @@ before 'deploy', 'jenkins:install_plugins'
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/e76247570c952ad3205ca7d6d3f0f7b5 "githalytics.com")](http://githalytics.com/cynipe/jenkins-capistrano)
