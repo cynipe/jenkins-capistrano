@@ -29,7 +29,7 @@ See [example directory](https://github.com/cynipe/jenkins-capistrano/tree/develo
 
 The following code will creates or updates Jenkins jobs before each deploy task:
 
-config directory structure(name your config.xml as a job name)
+config directory structure(name your config.xml as a job name):
 ```
 config
 ├── deploy.rb
@@ -40,8 +40,7 @@ config
          └── job-name3.xml
 ```
 
-
-deploy.rb
+deploy.rb:
 ```ruby
 set :application, "your-awesome-app"
 set :scm, :git
@@ -60,7 +59,7 @@ before 'deploy', 'jenkins:deploy_jobs'
 Since 0.0.5, you can disabling jobs using `disabled_jobs` option.
 Use this option with [multistage-extension](<https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension>).
 
-Put the following line into `config/deploy/<env>.rb`
+Put the following line into `config/deploy/<env>.rb`:
 ```
 set :disabled_jobs, %w(job1 job2)
 ```
@@ -68,7 +67,7 @@ set :disabled_jobs, %w(job1 job2)
 
 ### Node Configuration
 
-config directory structure(name your json file as a node name)
+config directory structure(name your json file as a node name):
 ```
 config
 ├── deploy.rb
@@ -79,7 +78,7 @@ config
          └── node3.json
 ```
 
-sample node configuration
+sample node configuration:
 ```json
 {
   "name"        : "example",
@@ -102,7 +101,7 @@ sample node configuration
 }
 ```
 
-deploy.rb
+deploy.rb:
 ```ruby
 set :application, "your-awesome-app"
 set :scm, :git
@@ -118,7 +117,7 @@ before 'deploy', 'jenkins:config_nodes'
 
 ### View Configuration
 
-config directory structure(name your json file as a node name)
+config directory structure(name your json file as a node name):
 ```
 config
 ├── deploy.rb
@@ -129,7 +128,7 @@ config
          └── view3.xml
 ```
 
-sample view configuration
+sample view configuration:
 ```xml
 <listView>
   <name>view1</name>
@@ -153,7 +152,7 @@ sample view configuration
 </listView>
 ```
 
-deploy.rb
+deploy.rb:
 ```ruby
 set :application, "your-awesome-app"
 set :scm, :git
@@ -180,7 +179,7 @@ ommit `<owner class="hudson" reference="../../.."/>` line.
 This feature is may change its API without any notice.
 Use at your own risk.
 
-deploy.rb
+deploy.rb:
 ```ruby
 set :application, "your-awesome-app"
 set :scm, :git
