@@ -6,8 +6,7 @@ module Jenkins
 
       def view_names
         self.class.get("/api/json")['views'].map {|view| view['name'] }.
-          # FIXME need to support i18N. Is there any way to retrieve what 'all' view name is?
-          select {|name| name != 'すべて' }
+          select {|name| name != all_view_name }
       end
 
       def view_config(name)

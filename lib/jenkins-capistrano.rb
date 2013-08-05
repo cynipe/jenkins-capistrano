@@ -20,6 +20,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   _cset(:jenkins_job_config_dir) { 'config/jenkins/jobs' }
   _cset(:jenkins_node_config_dir) { 'config/jenkins/nodes' }
   _cset(:jenkins_view_config_dir) { 'config/jenkins/views' }
+  _cset(:jenkins_all_view_name)   { 'All' }
 
   _cset(:jenkins_plugins) { [] }
   _cset(:jenkins_install_timeout) { 60 * 5 }
@@ -29,7 +30,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   _cset(:disabled_jobs) { [] }
 
   def client
-    @client ||= Jenkins::Client.new(jenkins_host, { :username => jenkins_username,  :password => jenkins_password})
+    @client ||= Jenkins::Client.new(jenkins_host, { :username => jenkins_username,  :password => jenkins_password, :all_view_name => jenkins_all_view_name })
   end
 
   def job_configs

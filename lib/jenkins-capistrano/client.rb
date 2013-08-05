@@ -18,9 +18,12 @@ module Jenkins
     ServerError = Class.new(Exception)
     TimeoutError = Class.new(Exception)
 
+    attr_reader :all_view_name
+
     def initialize(host, opts = {})
       self.class.base_uri host
       self.class.basic_auth opts[:username], opts[:password] if opts[:username] and opts[:password]
+      @all_view_name = opts[:all_view_name] || ''
     end
 
     def parse_error_message(response)
