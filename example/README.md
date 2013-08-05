@@ -22,7 +22,7 @@ $ script/deploy production
 
 ステージング環境:
 ```
-$ script/deploy production
+$ script/deploy staging
 ```
 
 開発環境:
