@@ -27,7 +27,7 @@ module Jenkins
 
       def disable_job(name)
         res = self.class.post("/job/#{CGI.escape(name)}/disable")
-        raise ServerError, parse_error_message(res) unless res.code.to_i == 200
+        raise ServerError, parse_error_message(res) unless res.code.to_i == 200 || res.code.to_i == 302
       rescue => e
         raise ServerError, "Failed to create job: #{name}, make sure you have specified auth info properly"
       end
