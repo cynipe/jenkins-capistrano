@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'capistrano_colors'
+require 'capistrano/ext/multistage'
+require 'railsless-deploy'
+require 'jenkins-capistrano'
+
+default_run_options[:pty] = true
+load 'config/deploy'
+

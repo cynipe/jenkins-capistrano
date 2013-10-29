@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+(gem spec bundler -v '~> 1.2.0' > /dev/null 2>&1) || gem install bundler -v '~> 1.2.0' --no-rdoc --no-ri
+
+# 常に綺麗な設定で行うように
+rm -rf .bundle/config
+bundle install --binstubs .bundle/bin --path .bundle
+

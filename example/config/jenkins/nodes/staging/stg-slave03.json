@@ -1,0 +1,17 @@
+{
+  "description" : "Slave3",
+  "slave_fs"    : "/home/jenkins",
+  "executors"   : 5,
+  "exclusive"   : true,
+  "labels"      : "hello",
+  "slave_host"  : "stg-slave03.local",
+  "slave_port"  : 22,
+  "slave_user"  : "jenkins",
+  "master_key"  : "/var/lib/jenkins/.ssh/id_rsa",
+  "jvm_options" : "-Dfile.encoding=UTF-8",
+  "env_vars": {
+    "LANG"            : "ja_JP.UTF-8",
+    "ENVIRONMENT"     : "staging",
+  }
+}
+
