@@ -197,6 +197,9 @@ before 'deploy', 'jenkins:install_plugins'
 
 ## Release Notes
 
+### 0.0.7
+  * Fix disable_job is not working with recent version of Jenkins ([#9](https://github.com/cynipe/jenkins-capistrano/pull/9))
+
 ### 0.0.6
   * Support view management ([726ad3ef](<https://github.com/cynipe/jenkins-capistrano/commit/726ad3ef817ba15a2d66503ce0dd4bc961ed92e2))
   * Support plugin management(Experimental) ([4d9964c0](https://github.com/cynipe/jenkins-capistrano/commit/4d9964c00ff95798915484ceb8b5c837b2aa03e8))
