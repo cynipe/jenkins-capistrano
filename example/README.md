@@ -1,32 +1,28 @@
 # jenkins-capistrano example
 
-jenkins-capistranoを使って、master-slave構成のJenkinsに以下のことを行う設定例
+This is a example **batch** project with jekins-capistrano configs
+which deploy and configure the following staff to the master-slave Jenkins:
 
-* バッチで必要なジョブ
-* バッチを実際に実行するためのスレーブノードの登録
-* バッチプログラム(binディレクトリ)のデプロイ
+* A job to execute the batch program
+* A node to excute the job
+* The batch program itself
 
-## 前提
+## Deploy
 
-* ローカルにruby1.8.7+が入っていること
-* 各スレーブノードに`/opt/hello`ディレクトリがあること
-* `/opt/hello`ディレクトリにjenkinsユーザが書き込み権限があること
-* jenkinsユーザがマスターノードからスレーブノードに公開鍵認証で接続できること
+### Development
 
-## デプロイの仕方
-
-本番環境:
-```
-$ script/deploy production
-```
-
-ステージング環境:
-```
-$ script/deploy staging
-```
-
-開発環境:
 ```
 $ script/deploy
 ```
 
+### Staging
+
+```
+$ script/deploy staging
+```
+
+### Production
+
+```
+$ script/deploy production
+```
