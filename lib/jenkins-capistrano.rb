@@ -1,4 +1,5 @@
 require 'jenkins-capistrano/version'
+require 'jenkins-capistrano/template'
 require 'jenkins_api_client'
 
 def _cset(name, *args, &block)
@@ -23,6 +24,8 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   _cset(:disabled_jobs) { [] }
 
+  _cset(:jenkins_template_vars) { {} }
+
   def client
     @client ||= JenkinsApi::Client.new(
       :log_location => '/dev/null',
@@ -34,17 +37,21 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   def job_configs
     abort "Please create the jenkins_job_config_dir first: #{jenkins_job_config_dir}" unless Dir.exists? jenkins_job_config_dir
-    Dir.glob("#{jenkins_job_config_dir}/*.xml")
+    Pathname.glob("#{jenkins_job_config_dir}/*.{xml,erb}")
   end
 
   def node_configs
     abort "Please create the jenkins_node_config_dir first: #{jenkins_node_config_dir}" unless Dir.exists? jenkins_node_config_dir
-    Dir.glob("#{jenkins_node_config_dir}/*.json")
+    Pathname.glob("#{jenkins_node_config_dir}/*.{xml,erb}")
   end
 
   def view_configs
     abort "Please create the jenkins_view_config_dir first: #{jenkins_node_config_dir}" unless Dir.exists? jenkins_node_config_dir
-    Dir.glob("#{jenkins_view_config_dir}/*.xml")
+    Pathname.glob("#{jenkins_view_config_dir}/*.{xml,erb}")
+  end
+
+  def name_for(file_path)
+    file_path.basename.to_s.split('.').first
   end
 
   def name_for(file_path)
@@ -74,10 +81,11 @@ Capistrano::Configuration.instance(:must_exist).load do
       logger.info "deploying jenkins jobs to #{jenkins_host}"
       logger.important "no job configs found." if job_configs.empty?
       job_configs.each do |file|
-        name = File.basename(file, '.xml')
+        name = name_for(file)
+        template = Jenkins::Template.new(file, jenkins_template_vars)
         msg = StringIO.new
 
-        client.job.create_or_update(name, File.read(file))
+        client.job.create_or_update(name, template.evaluate)
         msg << "job #{name} created"
 
         if disabled_jobs.include? name
@@ -102,12 +110,14 @@ Capistrano::Configuration.instance(:must_exist).load do
       logger.info "configuring jenkins nodes to #{jenkins_host}"
       logger.important "no node configs found." if node_configs.empty?
       node_configs.each do |file|
-        name = File.basename(file, '.xml')
+        name = name_for(file)
+
         unless client.node.list.include? name
           params =  { :name => name, :slave_host => 'dummy-by-jenkins-capistrano', :private_key_file => 'dummy' }
           client.node.create_dumb_slave(params)
         end
-        client.node.post_config(name, File.read(file))
+        template = Jenkins::Template.new(file, jenkins_template_vars)
+        client.node.post_config(name, template.evaluate)
         logger.trace "node #{name} created."
       end
     end
@@ -125,11 +135,12 @@ Capistrano::Configuration.instance(:must_exist).load do
       logger.info "configuring jenkins views to #{jenkins_host}"
       logger.important "no view configs found." if view_configs.empty?
       view_configs.each do |file|
-        name = File.basename(file, '.xml')
+        name = name_for(file)
         unless client.view.exists? name
           client.view.create name
         end
-        client.view.post_config(name, File.read(file))
+        template = Jenkins::Template.new(file, jenkins_template_vars)
+        client.view.post_config(name, template.evaluate)
         logger.trace "view #{name} created."
       end
     end
