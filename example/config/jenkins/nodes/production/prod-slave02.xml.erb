@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slave>
+  <name>prod-slave02</name>
+  <description>Slave02</description>
+  <remoteFS>/home/jenkins</remoteFS>
+  <numExecutors>5</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.5">
+    <host>prod-slave02.local</host>
+    <port>22</port>
+    <credentialsId><%= @slave02[:credential_id] %></credentialsId>
+    <jvmOptions>-Dfile.encoding=UTF-8</jvmOptions>
+  </launcher>
+  <label>hello</label>
+  <nodeProperties>
+    <hudson.slaves.EnvironmentVariablesNodeProperty>
+      <envVars serialization="custom">
+        <unserializable-parents/>
+        <tree-map>
+          <default>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </default>
+          <int>2</int><!-- must specify env var count -->
+          <string>LANG</string>
+          <string>ja_JP.UTF-8</string>
+          <string>ENVIRONMENT</string>
+          <string>production</string>
+        </tree-map>
+      </envVars>
+    </hudson.slaves.EnvironmentVariablesNodeProperty>
+  </nodeProperties>
+</slave>
