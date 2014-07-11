@@ -1,4 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'railsless-deploy'
-gem 'jenkins-capistrano'
+gem 'capistrano_colors'
+gem 'pry'
+gem 'jenkins-capistrano', :path => '..'
