@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jenkins-capistrano (0.0.7)
+    jenkins-capistrano (0.1.0)
       capistrano (< 3.0.0)
       jenkins_api_client (>= 1.0.0)
 
