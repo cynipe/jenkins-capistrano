@@ -300,6 +300,10 @@ gem 'jenkins_api_client', github: 'cynipe/jenkins_api_client', branch: 'fix-mult
 
 ## Release Notes
 
+### 0.1.1
+  * Abort when json file found in node config and show user-friendly message
+  * Remove unimplemented `jenkin:reverse_config` task
+
 ### 0.1.0
   * **[INCOMPATIBLE CHANGE]** Remove plugin support
   * **[INCOMPATIBLE CHANGE]** Change node configuration to use config.xml instead of json config
