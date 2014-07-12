@@ -72,14 +72,6 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     desc <<-DESC
-
-    DESC
-    task :reverse_jobs do
-      logger.important '[DEPRECATED] Use jenkins:config_jobs instead.'
-      config_jobs
-    end
-
-    desc <<-DESC
       Configure the nodes to Jenkins server.
 
       Configuration
@@ -90,6 +82,12 @@ Capistrano::Configuration.instance(:must_exist).load do
     DESC
     task :config_nodes do
       logger.info "configuring jenkins nodes to #{jenkins_host}"
+      abort <<-MSG.gsub(/^ +/, '') unless Dir.glob(File.join(jenkins_node_config_dir, '*.json')).empty?
+        Configuring the node using json is not supported anymore, use config.xml instead.
+        You could get the node's config.xml from a running Jenkins with following command:
+
+        $ curl -o config/jenkins/nodes/<node_name>.xml http://<jenkins-host>/computer/<node_name>/config.xml
+      MSG
       configurator.configure_nodes(node_configs)
     end
 

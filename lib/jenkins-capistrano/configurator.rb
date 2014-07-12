@@ -1,3 +1,4 @@
+require 'pathname'
 require 'jenkins-capistrano/template'
 require 'jenkins_api_client'
 
