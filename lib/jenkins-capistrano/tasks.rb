@@ -72,14 +72,6 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     desc <<-DESC
-
-    DESC
-    task :reverse_jobs do
-      logger.important '[DEPRECATED] Use jenkins:config_jobs instead.'
-      config_jobs
-    end
-
-    desc <<-DESC
       Configure the nodes to Jenkins server.
 
       Configuration
