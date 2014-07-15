@@ -59,8 +59,16 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rake (10.3.2)
+    rspec (3.0.0)
+      rspec-core (~> 3.0.0)
+      rspec-expectations (~> 3.0.0)
+      rspec-mocks (~> 3.0.0)
+    rspec-core (3.0.2)
+      rspec-support (~> 3.0.0)
     rspec-expectations (3.0.2)
       diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.0.0)
+    rspec-mocks (3.0.2)
       rspec-support (~> 3.0.0)
     rspec-support (3.0.2)
     slop (3.5.0)
@@ -77,4 +85,5 @@ DEPENDENCIES
   jenkins-capistrano!
   pry
   rake
+  rspec
   tapp

@@ -67,7 +67,8 @@ module Jenkins
 
       private
       def name_for(file_path)
-        file_path.basename.to_s.split('.').first
+        file_path = file_path.basename('.erb') if file_path.extname == '.erb'
+        file_path.basename('.xml').to_s
       end
 
       def config_xml_for(file)
